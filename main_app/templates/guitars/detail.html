@@ -16,4 +16,19 @@
   </div>
 </div>
 
+<!-- display guitar photos -->
+    {% for photo in guitar.photo_set.all %}
+      <img class="responsive-img card-panel" src="{{photo.url}}">
+    {% empty %}
+      <div class="card-panel teal-text center-align">No Photos Uploaded</div>
+    {% endfor %}
+
+<!-- form for adding photos -->
+{% comment %} <form action="{% url 'add_photo' guitar.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
+    {% csrf_token %}
+    <input type="file" name="photo-file">
+    <br><br>
+    <input type="submit" class="btn" value="Upload Photo">
+</form> {% endcomment %}
+
 {% endblock %}
