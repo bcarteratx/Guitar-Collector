@@ -24,11 +24,11 @@
     {% endfor %}
 
 <!-- form for adding photos -->
-{% comment %} <form action="{% url 'add_photo' guitar.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
+<form action="{% url 'add_photo' guitar.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
     {% csrf_token %}
     <input type="file" name="photo-file">
     <br><br>
     <input type="submit" class="btn" value="Upload Photo">
-</form> {% endcomment %}
+</form>
 
 {% endblock %}
