@@ -8,4 +8,4 @@ class Guitar(models.Model):
     year = models.IntegerField()
     
     def __str__(self):
-        return self.name 
+        return self.model 

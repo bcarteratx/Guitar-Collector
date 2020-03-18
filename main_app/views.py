@@ -13,3 +13,7 @@ def about(request):
 def guitars_index(request):
   guitars = Guitar.objects.all()
   return render(request, 'guitars/index.html', { 'guitars': guitars })
+
+def guitars_detail(request, guitar_id):
+  guitar = Guitar.objects.get(id=guitar_id)
+  return render(request, 'guitars/detail.html', { 'guitar': guitar })
