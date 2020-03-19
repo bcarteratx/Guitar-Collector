@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+
 
 # Create your models here.
 
@@ -16,6 +18,9 @@ class Guitar(models.Model):
     
     def __str__(self):
         return self.model
+
+    def get_absolute_url(self):
+        return reverse('detail', kwargs={'guitar_id': self.id})
 
 class Strumming(models.Model):
   date = models.DateField('strumming date')

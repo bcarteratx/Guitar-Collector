@@ -6,7 +6,7 @@
 <div class="card">
   <div class="card-content">
     <span class="card-title">{{ guitar.model }}</span>
-    <p>Breed: {{ guitar.brand }}</p>
+    <p>Brand: {{ guitar.brand }}</p>
     <p>Description: {{ guitar.description }}</p>
     {% if guitar.year < 1980 %}
         <p>Vintage: {{ guitar.year }}</p>
@@ -21,6 +21,13 @@
     </div>
   </div>
   <div class="col s6">
+  <!-- Strumming Form -->
+    <form method="post">
+      {% csrf_token %}
+      {{ strumming_form.as_p }}
+      <input type="submit" class="btn" value="Add Strumming">
+    </form>
+  <!-- Strumming List -->
     <table class="striped">
       <thead>
         <tr><th>Date</th><th>Gig</th></tr>
@@ -52,5 +59,20 @@
     <br><br>
     <input type="submit" class="btn" value="Upload Photo">
 </form>
+
+<!-- Materialize Date-Picker -->
+<script>
+  var dateEl = document.getElementById('id_date');
+  M.Datepicker.init(dateEl, {
+    format: 'yyyy-mm-dd',
+    defaultDate: new Date(),
+    setDefaultDate: true,
+    autoClose: true
+  });
+
+  // and fix dropdown
+  var selectEl = document.getElementById('id_gig');
+  M.FormSelect.init(selectEl);
+</script>
 
 {% endblock %}

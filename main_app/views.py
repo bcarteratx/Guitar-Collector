@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView
 
-from django.http import HttpResponse
 from .models import Guitar, Photo
+from .forms import StrummingForm
 ### for s3
 import uuid
 import boto3 #sdk to interact with aws bucket
@@ -23,7 +24,7 @@ class GuitarDelete(DeleteView):
   success_url = '/guitars/'
 
 def home(request):
-  return HttpResponse('<h1>Hello Guitarists</h1>')
+  return render(request, 'home.html')
 
 def about(request):
   return render(request, 'about.html')
@@ -34,7 +35,10 @@ def guitars_index(request):
 
 def guitars_detail(request, guitar_id):
   guitar = Guitar.objects.get(id=guitar_id)
-  return render(request, 'guitars/detail.html', { 'guitar': guitar })
+  strumming_form = StrummingForm()
+  return render(request, 'guitars/detail.html', {
+    'guitar': guitar, 'strumming_form': strumming_form
+    })
 
 
 
