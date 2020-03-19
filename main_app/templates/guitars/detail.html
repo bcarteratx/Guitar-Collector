@@ -14,7 +14,29 @@
         <p>Year: {{ guitar.year }}</p>
     {% endif %}
   </div>
+  <div class="card-action">
+        <a href="{% url 'guitars_update' guitar.id %}">Edit</a>
+        <a href="{% url 'guitars_delete' guitar.id %}">Delete</a>
+      </div>
+    </div>
+  </div>
+  <div class="col s6">
+    <table class="striped">
+      <thead>
+        <tr><th>Date</th><th>Gig</th></tr>
+      </thead>
+      <tbody>
+        {% for strumming in guitar.strumming_set.all %}
+          <tr>
+            <td>{{strumming.date}}</td>
+            <td>{{strumming.get_gig_display}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
+
 
 <!-- display guitar photos -->
     {% for photo in guitar.photo_set.all %}

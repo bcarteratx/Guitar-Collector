@@ -1,13 +1,26 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+
 from django.http import HttpResponse
 from .models import Guitar, Photo
 ### for s3
 import uuid
-# import boto3 #sdk to interact with aws bucket
+import boto3 #sdk to interact with aws bucket
 S3_BASE_URL = 'https://s3-us-east-2.amazonaws.com/'
 BUCKET = 'guitarcollectorone'
 
 # Create your views here.
+class GuitarCreate(CreateView):
+  model = Guitar
+  fields = '__all__'
+
+class GuitarUpdate(UpdateView):
+  model = Guitar
+  fields = ['model', 'brand', 'description', 'year']
+
+class GuitarDelete(DeleteView):
+  model = Guitar
+  success_url = '/guitars/'
 
 def home(request):
   return HttpResponse('<h1>Hello Guitarists</h1>')
