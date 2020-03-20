@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 
-from .models import Guitar, Photo
+from .models import Guitar, Photo, Amp
 from .forms import StrummingForm
 ### for s3
 import uuid
@@ -48,8 +48,6 @@ def add_strumming(request, guitar_id):
     new_strumming.save()
   return redirect('detail', guitar_id=guitar_id)
 
-
-
 def add_photo(request, guitar_id):
     # photo-file will be the "name" attribute on the <input type="file">
     photo_file = request.FILES.get('photo-file', None)
@@ -68,3 +66,21 @@ def add_photo(request, guitar_id):
         except:
             print('An error occurred uploading file to S3')
     return redirect('detail', guitar_id=guitar_id)
+
+class AmpList(ListView):
+  model = Amp
+
+class AmpDetail(DetailView):
+  model = Amp
+
+class AmpCreate(CreateView):
+  model = Amp
+  fields = '__all__'
+
+class AmpUpdate(UpdateView):
+  model = Amp
+  fields = '__all__'
+
+class AmpDelete(DeleteView):
+  model = Amp
+  success_url = '/amps/'
