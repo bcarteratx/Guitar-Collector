@@ -28,6 +28,7 @@ class Guitar(models.Model):
     brand = models.CharField(max_length=100)
     description = models.TextField(max_length=250)
     year = models.IntegerField()
+    amps = models.ManyToManyField(Amp)
 
     
     def __str__(self):

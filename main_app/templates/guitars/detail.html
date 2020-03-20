@@ -59,7 +59,25 @@
     <br><br>
     <input type="submit" class="btn" value="Upload Photo">
 </form>
-
+<!-- List of associated Amps -->
+<hr>
+<div class="row">
+  <div class="col s6">
+    <h3>This {{ guitar.model }} sounds great with these Amps</h3>
+    {% if guitar.amps.count %}
+      {% for amp in guitar.amps.all %}
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">
+              A {{ amp.watts }} watt, {{ amp.speakers }}, {{ amp.name }}
+            </span>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <h5>No Amps Yet :(</h5>
+    {% endif %}
+  </div>
 <!-- Materialize Date-Picker -->
 <script>
   var dateEl = document.getElementById('id_date');
