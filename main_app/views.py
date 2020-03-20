@@ -40,6 +40,14 @@ def guitars_detail(request, guitar_id):
     'guitar': guitar, 'strumming_form': strumming_form
     })
 
+def add_strumming(request, guitar_id):
+  form = StrummingForm(request.POST)
+  if form.is_valid():
+    new_strumming = form.save(commit=False)
+    new_strumming.guitar_id = guitar_id
+    new_strumming.save()
+  return redirect('detail', guitar_id=guitar_id)
+
 
 
 def add_photo(request, guitar_id):

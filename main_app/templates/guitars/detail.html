@@ -22,7 +22,7 @@
   </div>
   <div class="col s6">
   <!-- Strumming Form -->
-    <form method="post">
+    <form action="{% url 'add_strumming' guitar.id %}" method="post">
       {% csrf_token %}
       {{ strumming_form.as_p }}
       <input type="submit" class="btn" value="Add Strumming">
