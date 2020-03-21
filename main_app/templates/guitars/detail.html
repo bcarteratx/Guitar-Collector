@@ -78,6 +78,29 @@
       <h5>No Amps Yet :(</h5>
     {% endif %}
   </div>
+  <!-- List of un-associated amps -->
+  <div class="col s6">
+    <h3>Available Amps</h3>
+    {% if amps.count %}
+      {% for amp in amps.all %}
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">
+              A {{ amp.watts }} watt, {{ amp.speakers }}, {{ amp.name }}
+            </span>
+          </div>
+          <div class="card-action">
+            <form action="{% url 'assoc_amp' guitar.id amp.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn">Add</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <h6>{{cat.name}} This Guitar Already Has All Available Amps</h6>
+    {% endif %}
+  </div>
 <!-- Materialize Date-Picker -->
 <script>
   var dateEl = document.getElementById('id_date');

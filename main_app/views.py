@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Guitar, Photo, Amp
 from .forms import StrummingForm
 ### for s3
@@ -11,15 +14,19 @@ S3_BASE_URL = 'https://s3-us-east-2.amazonaws.com/'
 BUCKET = 'guitarcollectorone'
 
 # Create your views here.
-class GuitarCreate(CreateView):
-  model = Guitar
-  fields = '__all__'
-
-class GuitarUpdate(UpdateView):
+class GuitarCreate(LoginRequiredMixin, CreateView):
   model = Guitar
   fields = ['model', 'brand', 'description', 'year']
 
-class GuitarDelete(DeleteView):
+  def form_valid(self, form):
+    form.instance.user = self.request.user
+    return super().form_valid(form)
+
+class GuitarUpdate(LoginRequiredMixin, UpdateView):
+  model = Guitar
+  fields = ['model', 'brand', 'description', 'year']
+
+class GuitarDelete(LoginRequiredMixin, DeleteView):
   model = Guitar
   success_url = '/guitars/'
 
@@ -29,17 +36,21 @@ def home(request):
 def about(request):
   return render(request, 'about.html')
 
+@login_required
 def guitars_index(request):
-  guitars = Guitar.objects.all()
+  guitars = Guitar.objects.filter(user=request.user)
   return render(request, 'guitars/index.html', { 'guitars': guitars })
 
 def guitars_detail(request, guitar_id):
   guitar = Guitar.objects.get(id=guitar_id)
+  amps_guitar_doesnt_have = Amp.objects.exclude(id__in = guitar.amps.all().values_list('id'))
   strumming_form = StrummingForm()
   return render(request, 'guitars/detail.html', {
-    'guitar': guitar, 'strumming_form': strumming_form
+    'guitar': guitar, 'strumming_form': strumming_form,
+    'amps': amps_guitar_doesnt_have
     })
 
+@login_required
 def add_strumming(request, guitar_id):
   form = StrummingForm(request.POST)
   if form.is_valid():
@@ -48,6 +59,12 @@ def add_strumming(request, guitar_id):
     new_strumming.save()
   return redirect('detail', guitar_id=guitar_id)
 
+@login_required
+def assoc_amp(request, guitar_id, amp_id):
+  Guitar.objects.get(id=guitar_id).amps.add(amp_id)
+  return redirect('detail', guitar_id=guitar_id)
+
+@login_required
 def add_photo(request, guitar_id):
     # photo-file will be the "name" attribute on the <input type="file">
     photo_file = request.FILES.get('photo-file', None)
@@ -67,20 +84,34 @@ def add_photo(request, guitar_id):
             print('An error occurred uploading file to S3')
     return redirect('detail', guitar_id=guitar_id)
 
-class AmpList(ListView):
+class AmpList(LoginRequiredMixin, ListView):
   model = Amp
 
-class AmpDetail(DetailView):
+class AmpDetail(LoginRequiredMixin, DetailView):
   model = Amp
 
-class AmpCreate(CreateView):
-  model = Amp
-  fields = '__all__'
-
-class AmpUpdate(UpdateView):
+class AmpCreate(LoginRequiredMixin, CreateView):
   model = Amp
   fields = '__all__'
 
-class AmpDelete(DeleteView):
+class AmpUpdate(LoginRequiredMixin, UpdateView):
+  model = Amp
+  fields = '__all__'
+
+class AmpDelete(LoginRequiredMixin, DeleteView):
   model = Amp
   success_url = '/amps/'
+
+def signup(request):
+  error_message = ''
+  if request.method == 'POST':
+    form = UserCreationForm(request.POST)
+    if form.is_valid():
+      user = form.save()
+      login(request, user)
+      return redirect('index')
+    else:
+      error_message = 'Invalid sign up - try again'
+  form = UserCreationForm()
+  context = {'form': form, 'error_message': error_message}
+  return render(request, 'registration/signup.html', context)
