@@ -3,7 +3,7 @@ Babel==2.8.0
 boto3==1.12.24
 botocore==1.15.24
 dj-database-url==0.5.0
-Django==3.0.7
+Django==3.0.12
 django-heroku==0.3.1
 django-phonenumber-field==4.0.0
 docutils==0.15.2
